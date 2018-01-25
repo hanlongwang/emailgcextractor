@@ -57,7 +57,7 @@ foreach my $id (@mails) {
 
       while (my $row = <$fh>) {
         chomp $row;
-        if ($row =~ /(https:\/\/www.paypal-gifts.com\/en_us_ebay_dgsebayus\/paypal_gift\/index\/redeem\/s\/[0-9a-f]+\/)/) {
+        if ($row =~ /(https:\/\/www.paypal-gifts.com\/[^\/]+\/paypal_gift\/index\/redeem\/s\/[0-9a-f]+\/)/) {
           parseppdg($1);
         }
       }
