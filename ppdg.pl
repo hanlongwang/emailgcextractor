@@ -5,6 +5,7 @@ use IO::Socket::SSL;
 use MIME::Parser;
 use Data::Dumper;
 use LWP::Simple;
+use JSON;
 
 $user = '';
 $password = '';
@@ -14,19 +15,10 @@ sub parseppdg {
 
   $webpage = get($1);
   my $first = 1;
-  for (split /^/, $webpage) {
-    $row = $_;
-    chomp $row;
-    if ($row =~ /\<dd\>\$?([^\.]+)\.?.*\<\/dd\>/) {
-      if ($first == 1) {
-        $first = 0;
-      } else {
-        print ", ";
-      }
-      print "$1";
-    }
+  for ($webpage =~ /<script[^>]*>({.+})<\/script>/) {
+    my $json = decode_json($1);
+    print substr($json->{"cardDetails"}->{"itemValue"}, 1) . ", " . $json->{"cardDetails"}->{"giftCard"}->{"card_number"} . ", " . $json->{"cardDetails"}->{"giftCard"}->{"security_code"} . "\n";
   }
-  print "\n";
 }
 
 my $socket = IO::Socket::SSL->new(
@@ -57,7 +49,7 @@ foreach my $id (@mails) {
 
       while (my $row = <$fh>) {
         chomp $row;
-        if ($row =~ /(https:\/\/www.paypal-gifts.com\/[^\/]+\/paypal_gift\/index\/redeem\/s\/[0-9a-f]+\/)/) {
+        if ($row =~ /(https:\/\/www.paypal.com\/gifts\/claim\/[^\/]+\/)/) {
           parseppdg($1);
         }
       }
