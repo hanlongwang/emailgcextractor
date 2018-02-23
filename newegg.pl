@@ -24,9 +24,15 @@ sub parsenewegg {
     chomp $row;
     if ($row =~ /<span id="lblCertAmount" class="fntAmount">\$(\d+)\.\d+<\/span>/) {
       $amount = $1;
+    } elsif ($row =~ /InitialBalance[^\d]+(\d+)/) {
+      $amount = $1;
     } elsif ($row =~ /<img id="imgCertBarCode" src="\.\.\/barcodeimage\.ashx\?.+CBID=(\d+)&amp;/) {
       $code = $1;
+    } elsif ($row =~ /CardNumber[^\d]+(\d+)/) {
+      $code = $1;
     } elsif ($row =~ /<span id="lblPin" class="fntContent">(\d+)<\/span>/) {
+      $pin = $1;
+    } elsif ($row =~ /Pin[^\d]+(\d{4})/) {
       $pin = $1;
     }
   }
