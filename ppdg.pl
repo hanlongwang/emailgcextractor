@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+no warnings::anywhere qw(uninitialized);
+
 use Mail::IMAPClient;
 use IO::Socket::SSL;
 use MIME::Parser;
@@ -13,7 +15,7 @@ $password = '';
 sub parseppdg {
   my ($link) = @_;
 
-  $webpage = get($1);
+  my $webpage = get($link);
   my $first = 1;
   for ($webpage =~ /<script[^>]*>({.+})<\/script>/) {
     my $json = decode_json($1);
